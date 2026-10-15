@@ -16,8 +16,8 @@ A minimal Linux (ARM64) virtual machine manager for Apple Silicon Macs, built on
 ## Installation
 
 ```sh
-git clone https://github.com/pauloipf/VirtualizationARM64.git
-cd VirtualizationARM64
+git clone https://github.com/pauloipf/arm64vm.git
+cd arm64vm
 ./build.sh
 ```
 
@@ -26,7 +26,7 @@ cd VirtualizationARM64
 ## Layout
 
 ```
-VirtualizationARM64/
+arm64vm/
 ├── main.swift           source code
 ├── build.sh             compiles and signs
 ├── entitlements.plist   com.apple.security.virtualization entitlement

@@ -14,8 +14,8 @@ Gerenciador mínimo de máquinas virtuais Linux (ARM64) para Macs com Apple Sili
 ## Instalação
 
 ```sh
-git clone https://github.com/pauloipf/VirtualizationARM64.git
-cd VirtualizationARM64
+git clone https://github.com/pauloipf/arm64vm.git
+cd arm64vm
 ./build.sh
 ```
 
@@ -24,7 +24,7 @@ O `build.sh` compila o `main.swift` e assina o executável com o `entitlements.p
 ## Estrutura
 
 ```
-VirtualizationARM64/
+arm64vm/
 ├── main.swift           código-fonte
 ├── build.sh             compila e assina
 ├── entitlements.plist   permissão com.apple.security.virtualization
