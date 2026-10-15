@@ -54,51 +54,67 @@ Os arquivos são procurados na pasta onde está o executável, então o `arm64vm
 
 ## Uso
 
-```sh
-./arm64vm --vm kali                         # inicia uma VM
-./arm64vm --vm ubuntu --new 64g --install   # cria uma VM nova e abre o instalador
-./arm64vm --vm ubuntu --install             # instalação com a única .iso da pasta da VM
-./arm64vm --vm ubuntu --install outra.iso   # instalação com uma ISO específica
-./arm64vm --vm kali --cpus 6 --mem 8g       # muda núcleos e RAM (fica salvo)
-./arm64vm --list                            # lista as VMs, núcleos, RAM e disco
-./arm64vm --help                            # ajuda
-```
+### Passo a passo: uma VM Ubuntu
+
+Rode todos os comandos de dentro da pasta do projeto (`cd arm64vm`), nesta ordem.
+
+1. **Baixe a ISO.** Pegue a versão **ARM64** do Ubuntu (Desktop ou Server) em [ubuntu.com/download](https://ubuntu.com/download). Depois compare o checksum com o publicado no site:
+   ```sh
+   shasum -a 256 ~/Downloads/ubuntu-*-arm64.iso
+   ```
+2. **Crie a pasta da VM e mova a ISO para ela.** O nome da pasta é o nome da VM:
+   ```sh
+   mkdir -p vms/ubuntu
+   mv ~/Downloads/ubuntu-*-arm64.iso vms/ubuntu/
+   ```
+3. **Crie o disco e inicie o instalador:**
+   ```sh
+   ./arm64vm --vm ubuntu --new 64g --install
+   ```
+   O `--new` cria um `disk.img` esparso do tamanho pedido (`64g`, `128g`...) e **se recusa** a sobrescrever um disco existente. Para já escolher núcleos e RAM, acrescente: `--cpus 4 --mem 6g`.
+4. **Instale o Ubuntu** na janela que abrir. No particionamento, escolha o **disco virtio** (o tamanho que você definiu). Não escolha o pendrive USB, que é a ISO.
+5. **Reinicie.** Quando o instalador pedir para reiniciar, a janela fecha sozinha (ou feche você mesmo).
+6. **Inicie o sistema instalado.** Daqui em diante, sempre sem `--install`:
+   ```sh
+   ./arm64vm --vm ubuntu
+   ```
+7. **Opcional: ajuste núcleos e RAM** com a VM desligada. Os valores ficam salvos para os próximos boots:
+   ```sh
+   ./arm64vm --vm ubuntu --cpus 6 --mem 8g
+   ```
+8. **Confira suas VMs:**
+   ```sh
+   ./arm64vm --list
+   ```
+9. **Opcional: libere espaço** apagando a ISO, que não é mais necessária:
+   ```sh
+   rm vms/ubuntu/ubuntu-*-arm64.iso
+   ```
+
+Os mesmos passos valem para qualquer distro de [Outras distros](#outras-distros). Só mudam a ISO e o nome da VM.
+
+### Referência de comandos
+
+| Comando | O que faz |
+|---|---|
+| `./arm64vm --vm <nome>` | Inicia a VM pelo disco |
+| `./arm64vm --vm <nome> --new 64g --install` | Cria a VM com um disco novo e abre o instalador |
+| `./arm64vm --vm <nome> --install` | Abre o instalador com a única `.iso` de `vms/<nome>/` |
+| `./arm64vm --vm <nome> --install outra.iso` | Abre o instalador com uma ISO específica |
+| `./arm64vm --vm <nome> --cpus 6 --mem 8g` | Muda núcleos e RAM (fica salvo) e inicia a VM |
+| `./arm64vm --list` | Lista as VMs com núcleos, RAM e disco |
+| `./arm64vm --help` | Mostra a ajuda |
 
 Sem `--vm`, o app usa a VM existente se houver apenas uma. Com mais de uma, ele pede que você indique qual.
 
 ### Núcleos e RAM
 
-Núcleos e RAM podem ser alterados a qualquer momento, com a VM desligada, sem afetar o sistema instalado:
-
-```sh
-./arm64vm --vm kali --cpus 6 --mem 8g   # aplica e salva
-./arm64vm --vm kali                     # próximos boots usam 6 núcleos e 8 GB
-```
+Núcleos e RAM podem ser alterados a qualquer momento, com a VM desligada, sem afetar o sistema instalado.
 
 - Os valores ficam em `vms/<nome>/config.json`. Cada VM tem os seus, e dá para editar o arquivo direto.
 - Formatos aceitos em `--mem`: `8g` ou `8gb`, em GB inteiros.
 - Limites: de 1 núcleo até o total do Mac, e de 1 GB até a RAM do Mac menos 2 GB, que ficam reservados para o macOS. O app recusa valores fora disso.
-- Na criação, dá para definir tudo junto: `./arm64vm --vm ubuntu --new 64g --cpus 4 --mem 6g --install`.
 - O **tamanho do disco** não muda por aqui. Ele é definido no `--new`.
-
-### Criar uma nova VM
-
-1. Baixe a ISO **ARM64** da distro, sempre do site oficial, e confira o checksum (veja [Outras distros](#outras-distros)).
-2. Crie a pasta da VM e coloque a ISO nela:
-   ```sh
-   mkdir -p vms/ubuntu
-   mv ~/Downloads/ubuntu-*-arm64.iso vms/ubuntu/
-   ```
-3. Crie o disco e inicie o instalador:
-   ```sh
-   ./arm64vm --vm ubuntu --new 64g --install
-   ```
-   O `--new` cria um `disk.img` esparso do tamanho pedido (`64g`, `128g`, `500m`...). Ele **se recusa** a sobrescrever um disco existente.
-4. No particionamento, escolha o **disco virtio** (o tamanho que você definiu). Não escolha o pendrive USB, que é a ISO.
-5. Quando o instalador pedir para reiniciar, a janela fecha (ou feche você mesmo).
-6. A partir daí, inicie sempre sem `--install`: `./arm64vm --vm ubuntu`.
-
-Depois da instalação, a ISO pode ser apagada da pasta da VM para liberar espaço.
 
 ### Reinstalar uma VM do zero
 
