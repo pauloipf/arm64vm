@@ -1,0 +1,16 @@
+# Local VM data: installed disks contain passwords, history and keys.
+# NEVER remove these lines.
+vms/
+*.img
+*.iso
+efi_variables
+config.json
+compartilhado/
+
+# Compiled binary (build it with ./build.sh)
+arm64vm
+
+# macOS / editors
+.DS_Store
+*.bak
+*.swp
